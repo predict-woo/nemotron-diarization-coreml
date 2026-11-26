@@ -50,7 +50,7 @@ swift build -c release
 model loaded in 0.84s (low_latency)
 file                                    audio_s   proc_s    RTFx  steps  step_ms mean/p50/p95/max
 two_speakers                               60.0     1.16    51.7     83  14.0/13.0/23.5/23.7
-  speaker_0      0.11 -    34.10
+  speaker_0      0.11 -    34.11
   speaker_1     34.84 -    42.36
   speaker_0     42.48 -    60.00
 overall RTFx 51.7 (60.0s audio in 1.16s)
@@ -58,6 +58,8 @@ overall RTFx 51.7 (60.0s audio in 1.16s)
 
 [`two_speakers.wav`](https://huggingface.co/datasets/hf-internal-testing/dummy-audio-samples) is one of the test
 recordings. Short files run faster than the steady-state 42×, because the speaker cache is still filling up.
+Neural Engine output is deterministic for a given compiled model. Separate compilations can differ by fp16
+noise, enough to move a segment boundary that sits at exactly 50% probability by one 10 ms frame.
 
 * **First launch.** It takes about 75 s on a new machine while the Neural Engine compiler builds the model.
   macOS caches the result, and later launches take about 0.5 s.
