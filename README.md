@@ -13,9 +13,39 @@
 </p>
 
 This is a CoreML conversion of [nvidia/Nemotron-3-Diarization](https://huggingface.co/nvidia/Nemotron-3-Diarization),
-the streaming Sortformer that tells up to 8 speakers apart. It comes with a native Swift runtime that reproduces
-the model's streaming algorithm step for step. The test framework proves each build against the original
-PyTorch implementation.
+the streaming Sortformer that tells up to 8 speakers apart. It comes with a native Swift runtime and CLI that
+reproduce the model's streaming algorithm step for step. The test framework proves each build against the
+original PyTorch implementation.
+
+## Try it
+
+<p align="center">
+  <img alt="nemotron-diarize live: a scrolling timeline per speaker, with each speaker turn logged as it ends" src="docs/img/live-demo.svg" width="760">
+</p>
+
+On a Mac with Apple silicon (macOS 15+, Xcode and the [`hf` CLI](https://huggingface.co/docs/huggingface_hub/guides/cli)):
+
+```bash
+git clone https://github.com/predict-woo/nemotron-diarization-coreml && cd nemotron-diarization-coreml
+hf download predict-woo/Nemotron-3-Diarization-CoreML --include "Nemotron3Diarization/*" --local-dir models
+swift build -c release
+.build/release/nemotron-diarize live
+```
+
+Start talking. Each speaker gets a row in the timeline as soon as they're heard, and each turn is logged when it
+ends. Ctrl-C stops and shows how long each speaker talked.
+
+* **First launch** takes about a minute while macOS compiles the model for the Neural Engine. The result is
+  cached, and later launches take about 0.5 s.
+* **Microphone access:** macOS asks once, for your terminal app. To play a recording in real time instead, as
+  in the demo, use `live --file meeting.m4a`.
+* **Lower latency:** `--latency very-low` (0.64 s) or `--latency ultra-low` (0.32 s). The default is 1.04 s, the
+  most accurate.
+* **Build error with Xcode 26:** if the build fails with `unknown architecture` in a `.tbd` file, the Command
+  Line Tools SDK is newer than Xcode's linker. Run
+  `export SDKROOT=$(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk` first.
+
+## Highlights
 
 <p align="center">
   <picture>
@@ -23,8 +53,6 @@ PyTorch implementation.
     <img alt="Live streaming speed: PyTorch 6.0x, CoreML GPU fp32 19.2x and 24.9x, CoreML Neural Engine 42.4x real time" src="docs/img/speed-light.svg" width="820">
   </picture>
 </p>
-
-## Highlights
 
 - **Runs entirely on the Neural Engine.** CoreML places all 1,936 operations of every model function on the
   ANE. The GPU stays free, and the process uses 0.6 GB.
@@ -37,36 +65,35 @@ PyTorch implementation.
 - **Truly streaming.** Push audio in blocks of any size and get speaker activity back every 0.72 s, with
   identical results to processing the whole file at once.
 
-## Quick start
+## Usage
+
+### Files
 
 ```bash
-git clone https://github.com/predict-woo/nemotron-diarization-coreml && cd nemotron-diarization-coreml
-hf download predict-woo/Nemotron-3-Diarization-CoreML --include "Nemotron3Diarization/*" --local-dir models
-swift build -c release
-.build/release/nemotron-diarize --bundle models/Nemotron3Diarization --segments two_speakers.wav
+.build/release/nemotron-diarize meeting.wav             # timeline and speaker turns
+.build/release/nemotron-diarize meeting.wav -f rttm     # exact segments, in standard RTTM
+.build/release/nemotron-diarize *.wav -f stats          # speed per file
 ```
 
 ```
-model loaded in 0.84s (low_latency)
-file                                    audio_s   proc_s    RTFx  steps  step_ms mean/p50/p95/max
-two_speakers                               60.0     1.16    51.7     83  14.0/13.0/23.5/23.7
-  speaker_0      0.11 -    34.11
-  speaker_1     34.84 -    42.36
-  speaker_0     42.48 -    60.00
-overall RTFx 51.7 (60.0s audio in 1.16s)
+two_speakers.wav  1:00.0 · 2 speakers · diarized in 1.16 s (52× real time)
+
+  ● Speaker 1  ███████████████████████████████·······████████████████    51.5 s   87%
+  ● Speaker 2  ·······························███████················     7.5 s   13%
+               0:00                                              1:00
+
+   0:00.1 –  0:34.1   ● Speaker 1   34.0 s
+   0:34.8 –  0:42.4   ● Speaker 2    7.5 s
+   0:42.5 –  1:00.0   ● Speaker 1   17.5 s
 ```
 
-[`two_speakers.wav`](https://huggingface.co/datasets/hf-internal-testing/dummy-audio-samples) is one of the test
-recordings. Short files run faster than the steady-state 42×, because the speaker cache is still filling up.
+Any format AVFoundation reads works; audio is converted to 16 kHz mono. Files are streamed exactly as live audio
+would be. The turn list merges pauses shorter than 1 s, while `-f rttm` gives the model's exact segments. The
+model bundle defaults to `models/Nemotron3Diarization`; use `--bundle` or `$NEMOTRON_BUNDLE` for another one, and
+`--help` on any command for the rest.
+
 Neural Engine output is deterministic for a given compiled model. Separate compilations can differ by fp16
 noise, enough to move a segment boundary that sits at exactly 50% probability by one 10 ms frame.
-
-* **First launch.** It takes about 75 s on a new machine while the Neural Engine compiler builds the model.
-  macOS caches the result, and later launches take about 0.5 s.
-* **Audio input.** Any format AVFoundation reads; it's converted to 16 kHz mono.
-* **Build error with Xcode 26.** If the build fails with `unknown architecture` in a `.tbd` file, the Command
-  Line Tools SDK is newer than Xcode's linker. Run
-  `export SDKROOT=$(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk` first.
 
 ### From Swift
 
@@ -85,7 +112,8 @@ let tail = try diarizer.finish()                      // the last frames of the 
 ```
 
 Speakers are numbered in order of first appearance. For whole recordings, `OfflineDiarizer(bundleURL:)` gives the
-same results as streaming them.
+same results as streaming them. The CLI's [`LiveCommand.swift`](swift/Sources/nemotron-diarize/LiveCommand.swift)
+shows microphone capture with `AVAudioEngine`.
 
 ## Models
 
@@ -102,7 +130,7 @@ below are on an M2 Pro on battery, Low latency mode, over 563.5 s of audio.
 * **Memory** is peak resident memory, including the memory-mapped weights.
 * **Other streaming modes:** the Neural Engine bundle also runs the model card's *Very low latency* (0.64 s) and
   *Ultra-low latency* (0.32 s) modes, at 32.6× and 16.6× real time.
-* **Whole files:** `--offline` runs independent steps concurrently, which brings the GPU bundle to 32.1×.
+* **Whole files:** `file --offline` runs independent steps concurrently, which brings the GPU bundle to 32.1×.
 
 ## Accuracy
 
@@ -202,10 +230,10 @@ python scripts/build_bundle.py --model build/encoder_fp32_576.mlpackage --out di
 
 # verify and measure
 swift build -c release && pytest --full
-.build/release/nemotron-diarize --bundle dist/Nemotron3Diarization --out runs/ane data/16k/*.wav
+.build/release/nemotron-diarize -b dist/Nemotron3Diarization -f stats --out runs/ane data/16k/*.wav
 python scripts/der_report.py runs/ane
 python scripts/bench_original.py obama stress_12_5spk_300s two_speakers
-python scripts/make_charts.py
+python scripts/make_charts.py && python scripts/make_demo.py
 ```
 
 The NeMo reference (`scripts/nemo_reference.py`) needs NeMo Speech from GitHub main in a separate environment.
@@ -214,7 +242,7 @@ The NeMo reference (`scripts/nemo_reference.py`) needs NeMo Speech from GitHub m
 ## Repository
 
 ```
-Package.swift, swift/     Swift package: NemotronDiarization (StreamingDiarizer, OfflineDiarizer) + nemotron-diarize CLI
+Package.swift, swift/     Swift package: NemotronDiarization (StreamingDiarizer, OfflineDiarizer), nemotron-diarize CLI
 nemodiar/                 Python: the original's reference runner, NumPy port of the pipeline, CoreML conversion
                           graphs (GPU, Neural Engine), comparison and DER tools
 native/torch_topk.cpp     PyTorch's CPU top-k, shared with the Swift runtime

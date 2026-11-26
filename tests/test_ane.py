@@ -18,7 +18,7 @@ from nemodiar.der import (MAX_DER_INCREASE_FILE, MAX_DER_INCREASE_TOTAL, MAX_FLI
                           activity, der)
 from nemodiar.golden import Run, load_run_dir
 
-from .conftest import GOLDEN, audio_path, golden_names
+from .conftest import GOLDEN, audio_path, golden_names, total_rtfx
 
 LABELS = DATA_DIR.parent / "labels"
 
@@ -35,20 +35,21 @@ def bundle(request) -> Path:
 def ane_runs(request, swift_cli, bundle, tmp_path_factory):
     names = golden_names(request.config)
     out = tmp_path_factory.mktemp("ane")
-    proc = subprocess.run([str(swift_cli), "--bundle", str(bundle), "--out", str(out),
+    proc = subprocess.run([str(swift_cli), "file", "--bundle", str(bundle), "--format", "stats", "--out", str(out),
                            *[str(audio_path(n)) for n in names]], capture_output=True, text=True, check=True)
     return names, out, proc.stdout
 
 
 def test_every_operation_runs_on_the_neural_engine(swift_cli, bundle):
     """CoreML's compute plan of every bucket function: all non-constant operations on the Neural Engine."""
-    report = subprocess.run([str(swift_cli), "--bundle", str(bundle), "--compute-plan"], capture_output=True,
+    report = subprocess.run([str(swift_cli), "plan", "--bundle", str(bundle)], capture_output=True,
                             text=True, check=True).stdout.strip().splitlines()
-    assert report, "no functions reported"
-    for line in report:
-        name, counts = line.split(": ")
-        devices = dict(item.split("=") for item in counts.split())
-        assert set(devices) == {"NeuralEngine"}, f"{name}: {devices}"
+    header, rows = report[0].split(), report[1:]
+    assert header == ["function", "Neural", "Engine", "GPU", "CPU"], report
+    assert rows, "no functions reported"
+    for line in rows:
+        name, ane, gpu, cpu = line.split()  # a line about operations without a device would not split in 4
+        assert int(ane) > 0 and int(gpu) == 0 and int(cpu) == 0, line
 
 
 @pytest.mark.slow
@@ -77,5 +78,4 @@ def test_ane_diarizes_as_well_as_the_original(ane_runs):
 @pytest.mark.slow
 def test_ane_runtime_is_at_least_4x_real_time(ane_runs):
     _, _, stdout = ane_runs
-    rtfx = float(next(l for l in stdout.splitlines() if l.startswith("overall RTFx")).split()[2])
-    assert rtfx >= 4.0, stdout
+    assert total_rtfx(stdout) >= 4.0, stdout

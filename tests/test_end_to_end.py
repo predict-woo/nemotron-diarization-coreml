@@ -18,7 +18,7 @@ from nemodiar.compare import compare_runs, identity_failures
 from nemodiar.golden import Run, load_run_dir
 from nemodiar.pipeline import StreamingDiarizer, TorchBackend
 
-from .conftest import GOLDEN, audio_path
+from .conftest import GOLDEN, audio_path, total_rtfx
 
 
 @pytest.fixture(scope="module")
@@ -60,8 +60,8 @@ def run_swift(request, swift_cli, out: Path, *extra: str, bundle_option: str = "
     from .conftest import golden_names
 
     names = golden_names(request.config)
-    proc = subprocess.run([str(swift_cli), "--bundle", str(bundle), "--out", str(out), *extra,
-                           *[str(audio_path(n)) for n in names]], capture_output=True, text=True, check=True)
+    proc = subprocess.run([str(swift_cli), "file", "--bundle", str(bundle), "--format", "stats", "--out", str(out),
+                           *extra, *[str(audio_path(n)) for n in names]], capture_output=True, text=True, check=True)
     return out, proc.stdout
 
 
@@ -92,9 +92,7 @@ def test_swift_offline_runtime(swift_offline_runs, golden_name):
 @pytest.mark.slow
 def test_swift_runtime_is_at_least_4x_real_time(swift_runs):
     _, stdout = swift_runs
-    line = next(l for l in stdout.splitlines() if l.startswith("overall RTFx"))
-    rtfx = float(line.split()[2])
-    assert rtfx >= 4.0, stdout
+    assert total_rtfx(stdout) >= 4.0, stdout
 
 
 @pytest.mark.slow
@@ -106,7 +104,7 @@ def test_swift_runtime_other_modes(request, swift_cli, tmp_path, mode):
     if not names:
         pytest.skip(f"no goldens in {golden}")
     bundle = request.config.getoption("--gpu-bundle")
-    subprocess.run([str(swift_cli), "--bundle", bundle, "--mode", mode, "--out", str(tmp_path),
+    subprocess.run([str(swift_cli), "file", "--bundle", bundle, "--latency", mode, "--out", str(tmp_path),
                     *[str(audio_path(n)) for n in names]], capture_output=True, text=True, check=True)
     for name in names:
         comparison = compare_runs(Run.load(golden / f"{name}.npz"), load_run_dir(tmp_path / name))
@@ -124,7 +122,7 @@ def test_swift_output_independent_of_push_block_size(request, swift_cli, tmp_pat
     runs = []
     for block_ms in (7, 10**8):
         out = tmp_path / str(block_ms)
-        subprocess.run([str(swift_cli), "--bundle", bundle, "--block-ms", str(block_ms), "--out", str(out),
+        subprocess.run([str(swift_cli), "file", "--bundle", bundle, "--block-ms", str(block_ms), "--out", str(out),
                         str(audio_path("two_speakers"))], capture_output=True, check=True)
         runs.append(load_run_dir(out / "two_speakers"))
     assert runs[0].logits.shape == runs[1].logits.shape

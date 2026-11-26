@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 from pathlib import Path
 
@@ -55,6 +56,13 @@ def swift_cli():
     env = dict(os.environ, SDKROOT=os.environ.get("SDKROOT", SDKROOT))
     subprocess.run(["swift", "build", "-c", "release"], cwd=ROOT, env=env, check=True, capture_output=True)
     return ROOT / ".build" / "release" / "nemotron-diarize"
+
+
+def total_rtfx(stdout: str) -> float:
+    """Speed from the CLI's last line: "Total: 9:23.5 of audio in 13.29 s · 42.4× real time"."""
+    match = re.search(r"([\d.]+)× real time", stdout.strip().splitlines()[-1])
+    assert match, stdout
+    return float(match.group(1))
 
 
 def audio_path(name: str) -> Path:
