@@ -1,0 +1,23 @@
+# environments
+.venv/
+.venv-nemo/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+
+# downloaded / generated data (scripts/fetch_test_audio.sh, scripts/make_test_audio.py, hf download)
+hf/
+ref/
+data/
+runs/
+
+# build outputs (scripts/convert*.py, scripts/build_bundle.py, swift build); prebuilt models are on Hugging Face
+build/
+dist/
+models/
+.build/
+.swiftpm/
+native/*.dylib
+nemodiar/constants/*.npz
+
+.DS_Store

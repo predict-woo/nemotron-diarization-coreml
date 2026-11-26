@@ -1,0 +1,13 @@
+Nemotron-3-Diarization on CoreML
+Copyright 2026 the nemotron-diarization-coreml authors
+
+This project converts NVIDIA Nemotron-3-Diarization (https://huggingface.co/nvidia/Nemotron-3-Diarization) to
+CoreML. The model weights, and the CoreML models derived from them, are provided by NVIDIA under the OpenMDW
+License Agreement, version 1.1 (https://openmdw.ai/license/1-1/); they are not covered by this repository's
+Apache-2.0 license.
+
+The model and streaming logic follow the Hugging Face Transformers implementation of Nemotron-3-Diarization
+(https://github.com/huggingface/transformers), Copyright The HuggingFace Inc. team, licensed under Apache-2.0.
+
+The Neural Engine formulation follows the layout of apple/ml-ane-transformers
+(https://github.com/apple/ml-ane-transformers).

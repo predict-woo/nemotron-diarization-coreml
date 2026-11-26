@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="390" viewBox="0 0 820 390" role="img" aria-label="Encoder step latency versus step length on the GPU (fp32) and the Neural Engine (fp16)" font-family='system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif'>
+<title>Encoder step latency versus step length on the GPU (fp32) and the Neural Engine (fp16)</title>
+<rect x="0.5" y="0.5" width="819" height="389" rx="10" fill="#191919" stroke="#2c2c2c"/>
+<text x="24.0" y="34.0" font-size="16" font-weight="600" fill="#efefef" text-anchor="start" dominant-baseline="auto">One encoder step, by step length</text>
+<text x="24.0" y="55.0" font-size="12.5" font-weight="400" fill="#9c9c9c" text-anchor="start" dominant-baseline="auto">31-layer encoder at fixed lengths · lower is faster · ▲ Neural Engine buckets in use</text>
+<circle cx="29" cy="78" r="5" fill="#e76624"/>
+<text x="39.0" y="82.0" font-size="12" font-weight="400" fill="#9c9c9c" text-anchor="start" dominant-baseline="auto">GPU, fp32</text>
+<circle cx="125.4" cy="78" r="5" fill="#338ced"/>
+<text x="135.4" y="82.0" font-size="12" font-weight="400" fill="#9c9c9c" text-anchor="start" dominant-baseline="auto">Neural Engine, fp16</text>
+<rect x="276.2" y="104.0" width="278.7" height="212.0" fill="#222222"/>
+<text x="415.5" y="118.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">steady-state step lengths (322–541)</text>
+<line x1="70.0" y1="316.0" x2="630.0" y2="316.0" stroke="#2a2a2a" stroke-width="1.0" shape-rendering="crispEdges"/>
+<text x="60.0" y="316.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="end" dominant-baseline="middle">0</text>
+<line x1="70.0" y1="263.0" x2="630.0" y2="263.0" stroke="#2a2a2a" stroke-width="1.0" shape-rendering="crispEdges"/>
+<text x="60.0" y="263.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="end" dominant-baseline="middle">10</text>
+<line x1="70.0" y1="210.0" x2="630.0" y2="210.0" stroke="#2a2a2a" stroke-width="1.0" shape-rendering="crispEdges"/>
+<text x="60.0" y="210.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="end" dominant-baseline="middle">20</text>
+<line x1="70.0" y1="157.0" x2="630.0" y2="157.0" stroke="#2a2a2a" stroke-width="1.0" shape-rendering="crispEdges"/>
+<text x="60.0" y="157.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="end" dominant-baseline="middle">30</text>
+<line x1="70.0" y1="104.0" x2="630.0" y2="104.0" stroke="#2a2a2a" stroke-width="1.0" shape-rendering="crispEdges"/>
+<text x="60.0" y="104.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="end" dominant-baseline="middle">40 ms</text>
+<text x="110.7" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">192</text>
+<text x="192.2" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">256</text>
+<text x="273.6" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">320</text>
+<text x="355.1" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">384</text>
+<text x="436.5" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">448</text>
+<text x="518.0" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">512</text>
+<text x="599.5" y="342.0" font-size="11.5" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">576</text>
+<text x="350.0" y="362.0" font-size="12" font-weight="400" fill="#9c9c9c" text-anchor="middle" dominant-baseline="auto">step length (positions: speaker cache + FIFO + chunk)</text>
+<line x1="70.0" y1="316.0" x2="630.0" y2="316.0" stroke="#474747" stroke-width="1.0" shape-rendering="crispEdges"/>
+<polyline points="110.7,241.8 192.2,222.7 232.9,216.9 273.6,202.6 314.4,186.7 355.1,186.2 395.8,171.8 436.5,164.9 477.3,152.8 518.0,142.2 558.7,126.3 599.5,131.0" fill="none" stroke="#e76624" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="110.7" cy="241.8" r="6" fill="#191919"/><circle cx="110.7" cy="241.8" r="4" fill="#e76624"/>
+<circle cx="192.2" cy="222.7" r="6" fill="#191919"/><circle cx="192.2" cy="222.7" r="4" fill="#e76624"/>
+<circle cx="232.9" cy="216.9" r="6" fill="#191919"/><circle cx="232.9" cy="216.9" r="4" fill="#e76624"/>
+<circle cx="273.6" cy="202.6" r="6" fill="#191919"/><circle cx="273.6" cy="202.6" r="4" fill="#e76624"/>
+<circle cx="314.4" cy="186.7" r="6" fill="#191919"/><circle cx="314.4" cy="186.7" r="4" fill="#e76624"/>
+<circle cx="355.1" cy="186.2" r="6" fill="#191919"/><circle cx="355.1" cy="186.2" r="4" fill="#e76624"/>
+<circle cx="395.8" cy="171.8" r="6" fill="#191919"/><circle cx="395.8" cy="171.8" r="4" fill="#e76624"/>
+<circle cx="436.5" cy="164.9" r="6" fill="#191919"/><circle cx="436.5" cy="164.9" r="4" fill="#e76624"/>
+<circle cx="477.3" cy="152.8" r="6" fill="#191919"/><circle cx="477.3" cy="152.8" r="4" fill="#e76624"/>
+<circle cx="518.0" cy="142.2" r="6" fill="#191919"/><circle cx="518.0" cy="142.2" r="4" fill="#e76624"/>
+<circle cx="558.7" cy="126.3" r="6" fill="#191919"/><circle cx="558.7" cy="126.3" r="4" fill="#e76624"/>
+<circle cx="599.5" cy="131.0" r="6" fill="#191919"/><circle cx="599.5" cy="131.0" r="4" fill="#e76624"/>
+<polyline points="110.7,281.0 192.2,272.0 232.9,261.4 273.6,256.1 314.4,252.9 355.1,248.7 395.8,227.5 436.5,222.2 477.3,219.0 518.0,201.0 558.7,194.1 599.5,190.4" fill="none" stroke="#338ced" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="110.7" cy="281.0" r="6" fill="#191919"/><circle cx="110.7" cy="281.0" r="4" fill="#338ced"/>
+<circle cx="192.2" cy="272.0" r="6" fill="#191919"/><circle cx="192.2" cy="272.0" r="4" fill="#338ced"/>
+<circle cx="232.9" cy="261.4" r="6" fill="#191919"/><circle cx="232.9" cy="261.4" r="4" fill="#338ced"/>
+<circle cx="273.6" cy="256.1" r="6" fill="#191919"/><circle cx="273.6" cy="256.1" r="4" fill="#338ced"/>
+<circle cx="314.4" cy="252.9" r="6" fill="#191919"/><circle cx="314.4" cy="252.9" r="4" fill="#338ced"/>
+<circle cx="355.1" cy="248.7" r="6" fill="#191919"/><circle cx="355.1" cy="248.7" r="4" fill="#338ced"/>
+<circle cx="395.8" cy="227.5" r="6" fill="#191919"/><circle cx="395.8" cy="227.5" r="4" fill="#338ced"/>
+<circle cx="436.5" cy="222.2" r="6" fill="#191919"/><circle cx="436.5" cy="222.2" r="4" fill="#338ced"/>
+<circle cx="477.3" cy="219.0" r="6" fill="#191919"/><circle cx="477.3" cy="219.0" r="4" fill="#338ced"/>
+<circle cx="518.0" cy="201.0" r="6" fill="#191919"/><circle cx="518.0" cy="201.0" r="4" fill="#338ced"/>
+<circle cx="558.7" cy="194.1" r="6" fill="#191919"/><circle cx="558.7" cy="194.1" r="4" fill="#338ced"/>
+<circle cx="599.5" cy="190.4" r="6" fill="#191919"/><circle cx="599.5" cy="190.4" r="4" fill="#338ced"/>
+<path d="M105.7,327.0 l5,-7 l5,7 z" fill="#338ced"/>
+<path d="M227.9,327.0 l5,-7 l5,7 z" fill="#338ced"/>
+<path d="M350.1,327.0 l5,-7 l5,7 z" fill="#338ced"/>
+<path d="M472.3,327.0 l5,-7 l5,7 z" fill="#338ced"/>
+<path d="M553.7,327.0 l5,-7 l5,7 z" fill="#338ced"/>
+<text x="611.5" y="131.0" font-size="12.5" font-weight="400" fill="#efefef" text-anchor="start" dominant-baseline="middle">GPU fp32  34.9 ms</text>
+<text x="611.5" y="190.4" font-size="12.5" font-weight="600" fill="#efefef" text-anchor="start" dominant-baseline="middle">Neural Engine  23.7 ms</text>
+</svg>
