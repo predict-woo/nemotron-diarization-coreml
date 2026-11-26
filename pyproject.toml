@@ -18,7 +18,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/predict-woo/nemotron-diarization-coreml"
-Models = "https://huggingface.co/andyye/Nemotron-3-Diarization-CoreML"
+Models = "https://huggingface.co/predict-woo/Nemotron-3-Diarization-CoreML"
 
 [build-system]
 requires = ["setuptools>=68"]

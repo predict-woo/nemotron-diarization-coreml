@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://huggingface.co/andyye/Nemotron-3-Diarization-CoreML"><img alt="Models on Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20models-Nemotron--3--Diarization--CoreML-yellow"></a>
+  <a href="https://huggingface.co/predict-woo/Nemotron-3-Diarization-CoreML"><img alt="Models on Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20models-Nemotron--3--Diarization--CoreML-yellow"></a>
   <img alt="macOS 15+" src="https://img.shields.io/badge/macOS-15%2B-lightgrey">
   <img alt="Swift 6" src="https://img.shields.io/badge/Swift-6-orange">
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/code-Apache--2.0-blue"></a>
@@ -41,7 +41,7 @@ PyTorch implementation.
 
 ```bash
 git clone https://github.com/predict-woo/nemotron-diarization-coreml && cd nemotron-diarization-coreml
-hf download andyye/Nemotron-3-Diarization-CoreML --include "Nemotron3Diarization/*" --local-dir models
+hf download predict-woo/Nemotron-3-Diarization-CoreML --include "Nemotron3Diarization/*" --local-dir models
 swift build -c release
 .build/release/nemotron-diarize --bundle models/Nemotron3Diarization --segments two_speakers.wav
 ```
@@ -87,7 +87,7 @@ same results as streaming them.
 
 ## Models
 
-Prebuilt bundles are on [Hugging Face](https://huggingface.co/andyye/Nemotron-3-Diarization-CoreML). The numbers
+Prebuilt bundles are on [Hugging Face](https://huggingface.co/predict-woo/Nemotron-3-Diarization-CoreML). The numbers
 below are on an M2 Pro on battery, Low latency mode, over 563.5 s of audio.
 
 | Bundle | Runs on | Live speed | vs original | Memory | Accuracy |
